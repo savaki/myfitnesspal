@@ -44,7 +44,19 @@ Will return something like:
 
 ```
 {
+  "breakfast": [
+    {
+      "label": "Breakfast Burrito",
+      "calories": 450,
+      "carbs": 250,
+      "fat": 150,
+      "protein": 50,
+      "sodium": 600,
+      "sugar": 0
+    }
+  ],
   "totals": {
+    "label": "Totals",    
     "calories": 450,
     "carbs": 250,
     "fat": 150,
@@ -53,6 +65,7 @@ Will return something like:
     "sugar": 0
   },
   "goal": {
+    "label": "Your Daily Goal",    
     "calories": 450,
     "carbs": 250,
     "fat": 150,
@@ -61,6 +74,7 @@ Will return something like:
     "sugar": 0
   },
   "remaining": {
+    "label": "Remaining",    
     "calories": 0,
     "carbs": 0,
     "fat": 0,
