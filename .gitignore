@@ -1,0 +1,6 @@
+# ignore binaries
+/myfitnesspal/myfitnesspal
+
+# ignore temp files
+/*.env
+
