@@ -2,6 +2,8 @@
 
 [![GoDoc](https://godoc.org/github.com/savaki/myfitnesspal?status.svg)](https://godoc.org/github.com/savaki/myfitnesspal)
 
+[![Build Status](https://snap-ci.com/savaki/myfitnesspal/branch/master/build_image)](https://snap-ci.com/savaki/myfitnesspal/branch/master)
+
 A client library and command line tool for myfitnesspal.
 
 ## Installation
