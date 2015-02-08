@@ -1,6 +1,7 @@
 package myfitnesspal
 
 import (
+	"fmt"
 	"io"
 	"net/url"
 	"strconv"
@@ -39,24 +40,46 @@ func parseFoodDiary(r io.Reader) (*DiaryEntry, error) {
 		return nil, err
 	}
 
-	macros := map[string]*Macros{}
-	doc.Find(".total").Each(func(i int, s *goquery.Selection) {
-		if label, entry, err := parseMacros(s); err == nil {
-			macros[label] = entry
+	entries := MacrosArray{}
+	var section string = ""
+	doc.Find("tr").Each(func(i int, s *goquery.Selection) {
+		class, _ := s.Attr("class")
+		if class == "meal_header" {
+			section = findCellTexts(s)[0]
+			return
+		} else if class == "total" {
+			section = "Totals"
+		}
+
+		if entry, err := parseMacros(s); err == nil {
+			// bottom is the summary row, we don't want this
+			// label is blank for filler columns that don't contain data
+			if class != "bottom" && entry.Label != "" {
+				entry.Section = section
+				entries = append(entries, entry)
+			}
 		}
 	})
 
 	return &DiaryEntry{
-		Totals:    macros["Totals"],
-		Goal:      macros["Your Daily Goal"],
-		Remaining: macros["Remaining"],
+		Breakfast: entries.FindAll("Breakfast"),
+		Lunch:     entries.FindAll("Lunch"),
+		Dinner:    entries.FindAll("Dinner"),
+		Snacks:    entries.FindAll("Snacks"),
+		Totals:    entries.Find("Totals", "Totals"),
+		Goal:      entries.Find("Totals", "Your Daily Goal"),
+		Remaining: entries.Find("Totals", "Remaining"),
 	}, nil
 }
 
-func parseMacros(s *goquery.Selection) (label string, entry *Macros, err error) {
-	values := s.Find("td").Map(func(i int, s *goquery.Selection) string {
+func findCellTexts(s *goquery.Selection) []string {
+	return s.Find("td").Map(func(i int, s *goquery.Selection) string {
 		return strings.TrimSpace(s.Text())
 	})
+}
+
+func parseMacros(s *goquery.Selection) (macros *Macros, err error) {
+	values := findCellTexts(s)
 
 	atoi := func(str string) int {
 		strWithoutCommas := strings.Replace(str, ",", "", -1)
@@ -67,8 +90,13 @@ func parseMacros(s *goquery.Selection) (label string, entry *Macros, err error) 
 		return i
 	}
 
-	label = values[0]
-	entry = &Macros{
+	if len(values) < 7 {
+		err = fmt.Errorf("no macros found")
+		return
+	}
+
+	macros = &Macros{
+		Label:    values[0],
 		Calories: atoi(values[1]),
 		Carbs:    atoi(values[2]),
 		Fat:      atoi(values[3]),
