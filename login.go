@@ -1,7 +1,6 @@
 package myfitnesspal
 
 import (
-	"fmt"
 	"io"
 	"net/http"
 	"net/http/cookiejar"
@@ -46,7 +45,6 @@ func login(username, password string) (*http.Client, error) {
 	params.Set("username", username)
 	params.Set("password", password)
 	params.Set("remember_me", "1")
-	fmt.Println(params.Encode())
 	resp, err = client.Post(LoginUrl, "application/x-www-form-urlencoded", strings.NewReader(params.Encode()))
 	if err != nil {
 		return nil, err

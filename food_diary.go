@@ -1,7 +1,6 @@
 package myfitnesspal
 
 import (
-	"fmt"
 	"io"
 	"net/url"
 	"strconv"
@@ -25,7 +24,6 @@ func (c *Client) FoodDiary(date time.Time) (*DiaryEntry, error) {
 	uri.RawQuery = params.Encode()
 
 	// execute the request
-	fmt.Println(uri.String())
 	resp, err := c.client.Get(uri.String())
 	if err != nil {
 		return nil, err
